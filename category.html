@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Teste - Categorias</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="data.js"></script>
+    <script type="module" src="store.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto p-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-gray-800">Loja Teste</a>
+            <div class="space-x-4 flex items-center">
+                <a href="index.html" class="text-gray-600 hover:text-gray-900 font-semibold">Home</a>
+                <a href="category.html" class="text-gray-600 hover:text-gray-900 font-semibold">Categorias</a>
+                <a href="cart.html" class="text-gray-600 hover:text-gray-900 font-semibold">Carrinho</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-8 flex-grow">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Todos os Produtos</h2>
+            <div class="flex items-center space-x-2">
+                <label for="category-filter" class="text-gray-700 font-semibold">Categoria:</label>
+                <select id="category-filter" class="rounded-lg p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="all">Todas</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Os produtos serão renderizados aqui pelo JS -->
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white p-4 text-center mt-auto">
+        <p>&copy; By: Vinicius Freitas.</p>
+    </footer>
+
+    <script type="module">
+        import { getProducts, getProductCategories } from './store.js';
+
+        const productList = document.getElementById('product-list');
+        const categoryFilter = document.getElementById('category-filter');
+        let allProducts = getProducts();
+
+        const renderProducts = (products) => {
+            if (!productList) return;
+            productList.innerHTML = '';
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = "bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden";
+                productCard.innerHTML = `
+                    <a href="product.html?id=${product.id}">
+                        <img src="${product.imageUrl}" alt="${product.name}" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-gray-900">${product.name}</h3>
+                            <p class="text-gray-500 text-sm mt-1">${product.category}</p>
+                            <p class="text-xl font-bold text-blue-600 mt-2">R$ ${product.price.toFixed(2).replace('.', ',')}</p>
+                        </div>
+                    </a>
+                `;
+                productList.appendChild(productCard);
+            });
+        };
+
+        const renderCategories = (categories) => {
+            if (!categoryFilter) return;
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+        };
+
+        const filterProducts = () => {
+            const selectedCategory = categoryFilter.value;
+            if (selectedCategory === 'all') {
+                renderProducts(allProducts);
+            } else {
+                const filtered = allProducts.filter(product => product.category === selectedCategory);
+                renderProducts(filtered);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const categories = getProductCategories();
+            renderCategories(categories);
+            renderProducts(allProducts);
+
+            if (categoryFilter) {
+                categoryFilter.addEventListener('change', filterProducts);
+            }
+        });
+    </script>
+</body>
+</html>

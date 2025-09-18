@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Teste - Produto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="data.js"></script>
+    <script type="module" src="store.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto p-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-gray-800">Loja Teste</a>
+            <div class="space-x-4 flex items-center">
+                <a href="index.html" class="text-gray-600 hover:text-gray-900 font-semibold">Home</a>
+                <a href="category.html" class="text-gray-600 hover:text-gray-900 font-semibold">Categorias</a>
+                <a href="cart.html" class="text-gray-600 hover:text-gray-900 font-semibold">Carrinho</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-8 flex-grow">
+        <div id="product-details-container" class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+            <!-- Os detalhes do produto serão renderizados aqui pelo JS -->
+        </div>
+
+        <!-- Mensagem de confirmação -->
+        <div id="message-box" class="fixed bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 bg-green-500 text-white rounded-full shadow-lg transition-transform transform-gpu scale-0" style="min-width: 250px; text-align: center;">
+            Item adicionado ao carrinho!
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white p-4 text-center mt-auto">
+        <p>&copy; By: Vinicius Freitas.</p>
+    </footer>
+
+    <script type="module">
+        import { getProductById, addToCart } from './store.js';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        const renderProductDetails = (product) => {
+            const container = document.getElementById('product-details-container');
+            if (!container) return;
+            
+            if (!product) {
+                container.innerHTML = `<p class="p-8 text-center text-gray-600">Produto não encontrado.</p>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="md:w-1/2 p-8">
+                    <img src="${product.imageUrl}" alt="${product.name}" class="w-full rounded-lg shadow-lg">
+                </div>
+                <div class="md:w-1/2 p-8 flex flex-col justify-center">
+                    <h1 class="text-4xl font-extrabold text-gray-900">${product.name}</h1>
+                    <p class="text-gray-500 text-lg mt-2">${product.category}</p>
+                    <p class="text-2xl font-bold text-blue-600 mt-4">R$ ${product.price.toFixed(2).replace('.', ',')}</p>
+                    <p class="text-gray-700 mt-4 leading-relaxed">${product.description}</p>
+                    <button id="add-to-cart-btn" class="mt-8 bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-200">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+            `;
+            
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', () => {
+                    addToCart(product);
+                    showMessageBox();
+                });
+            }
+        };
+
+        const showMessageBox = () => {
+            const messageBox = document.getElementById('message-box');
+            if (messageBox) {
+                messageBox.classList.remove('scale-0');
+                messageBox.classList.add('scale-100');
+                setTimeout(() => {
+                    messageBox.classList.remove('scale-100');
+                    messageBox.classList.add('scale-0');
+                }, 2000);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const product = getProductById(productId);
+            renderProductDetails(product);
+        });
+    </script>
+</body>
+</html>
