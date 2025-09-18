@@ -6,7 +6,7 @@ export const products = [
         price: 199.99,
         category: 'Eletrônicos',
         description: 'Fone de ouvido com cancelamento de ruído, bateria de longa duração e som de alta fidelidade.',
-        imageUrl: 'https://placehold.co/400x400/3B82F6/ffffff?text=Fone+Sem+Fio',
+        imageUrl: 'https://mirandacomputacao.jetassets.com.br/produto/multifotos/hd/47672-principal.png',
         featured: true
     },
     {
@@ -15,7 +15,7 @@ export const products = [
         price: 349.50,
         category: 'Eletrônicos',
         description: 'Relógio inteligente com monitor de batimentos cardíacos, GPS integrado e resistência à água.',
-        imageUrl: 'https://placehold.co/400x400/3B82F6/ffffff?text=Smartwatch',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/p6pim/br/2407/gallery/br-galaxy-watch7-l300-sm-l300nzeazto-542363176?$684_547_PNG$',
         featured: false
     },
     {
@@ -24,7 +24,7 @@ export const products = [
         price: 49.90,
         category: 'Livros',
         description: 'Um best-seller aclamado pela crítica que explora os limites do espaço e do tempo.',
-        imageUrl: 'https://placehold.co/400x400/9CA3AF/ffffff?text=Livro+Fic%C3%A7%C3%A3o',
+        imageUrl: 'https://rollingstone.com.br/wp-content/uploads/2024/02/81zn7udgrul_sl1500.jpg',
         featured: true
     },
     {
@@ -33,7 +33,7 @@ export const products = [
         price: 120.00,
         category: 'Acessórios',
         description: 'Mochila elegante e resistente, ideal para o dia a dia e viagens curtas.',
-        imageUrl: 'https://placehold.co/400x400/EF4444/ffffff?text=Mochila',
+        imageUrl: 'https://images.tcdn.com.br/img/img_prod/654692/mochila_de_couro_para_notebook_marrom_whisky_hm087_hamish_289_1_da42c19a955ad773c9a5740ab78fe335.jpg',
         featured: true
     },
     {
@@ -42,7 +42,7 @@ export const products = [
         price: 1500.00,
         category: 'Eletrônicos',
         description: 'Câmera profissional com lente intercambiável, ideal para fotógrafos amadores e profissionais.',
-        imageUrl: 'https://placehold.co/400x400/3B82F6/ffffff?text=C%C3%A2mera+DSLR',
+        imageUrl: 'https://emania.vteximg.com.br/arquivos/ids/161297-1000-1000/1.png?v=636414327447600000',
         featured: false
     },
     {
@@ -51,7 +51,7 @@ export const products = [
         price: 75.00,
         category: 'Beleza',
         description: 'Conjunto completo com pincéis de alta qualidade para uma maquiagem impecável.',
-        imageUrl: 'https://placehold.co/400x400/EC4899/ffffff?text=Pinc%C3%A9is',
+        imageUrl: 'https://m.media-amazon.com/images/I/61fEJNPNeTL._UF1000,1000_QL80_.jpg',
         featured: true
     },
     {
@@ -60,7 +60,7 @@ export const products = [
         price: 450.00,
         category: 'Música',
         description: 'Violão clássico com acabamento em madeira, som claro e excelente ressonância.',
-        imageUrl: 'https://placehold.co/400x400/7C3AED/ffffff?text=Viol%C3%A3o',
+        imageUrl: 'https://cdn.awsli.com.br/2500x2500/2609/2609787/produto/314986934/021-fuz7ebhyb8.jpg',
         featured: false
     },
     {
@@ -69,7 +69,7 @@ export const products = [
         price: 250.00,
         category: 'Esportes',
         description: 'Tênis leve e com amortecimento avançado, perfeito para treinos e maratonas.',
-        imageUrl: 'https://placehold.co/400x400/10B981/ffffff?text=T%C3%AAnis+Corrida',
+        imageUrl: 'https://mizunobr.vtexassets.com/arquivos/ids/237036-800-800?v=638332650068070000&width=800&height=800&aspect=true',
         featured: false
     },
     {
@@ -78,7 +78,7 @@ export const products = [
         price: 89.90,
         category: 'Eletrônicos',
         description: 'Fones de ouvido com fio e microfone embutido, excelente para chamadas e jogos.',
-        imageUrl: 'https://placehold.co/400x400/3B82F6/ffffff?text=Fones+Com+Fio',
+        imageUrl: 'https://m.media-amazon.com/images/I/51D64LTowQL._UF1000,1000_QL80_.jpg',
         featured: false
     },
     {
@@ -87,7 +87,7 @@ export const products = [
         price: 65.00,
         category: 'Livros',
         description: 'Livro com receitas clássicas e contemporâneas, ideal para amantes da culinária.',
-        imageUrl: 'https://placehold.co/400x400/9CA3AF/ffffff?text=Livro+Culin%C3%A1ria',
+        imageUrl: 'https://m.media-amazon.com/images/I/61tf90sRkcL._UF1000,1000_QL80_.jpg',
         featured: false
     }
 ];
