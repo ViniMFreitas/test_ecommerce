@@ -7,11 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="data.js"></script>
     <script type="module" src="store.js"></script>
+    <!-- Insider Queue  -->
+    <script>window.InsiderQueue = window.InsiderQueue || [];</script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
+<!-- Insider Tag  -->
+<script async src="https://tamuat.api.useinsider.com/ins.js?id=10007210"></script>
 <body class="bg-gray-100 flex flex-col min-h-screen">
 
     <header class="bg-white shadow-md">
@@ -43,6 +47,7 @@
 
     <script type="module">
         import { getCart, removeFromCart, getCartTotal } from './store.js';
+        import { products } from './data.js'; // Importar os produtos do data.js
 
         const renderCart = () => {
             const cart = getCart();
@@ -55,6 +60,17 @@
 
             if (cart.length === 0) {
                 container.innerHTML = `<p class="text-center text-gray-600">Seu carrinho está vazio.</p>`;
+                // Envia um evento de carrinho vazio para o Insider
+                if (window.InsiderQueue) {
+                    window.InsiderQueue.push({
+                        type: 'cart',
+                        value: {
+                            "shipping_cost": 0,
+                            "total": 0,
+                            "items": []
+                        }
+                    });
+                }
                 return;
             }
 
@@ -78,6 +94,9 @@
             });
 
             const cartTotal = getCartTotal();
+            const shippingCost = 7.99; // Exemplo de custo de frete fixo
+            const grandTotal = cartTotal + shippingCost;
+
             summary.innerHTML = `
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-lg font-bold text-gray-800">Total do Carrinho:</span>
@@ -92,12 +111,76 @@
                 button.addEventListener('click', (e) => {
                     const productId = e.target.dataset.id;
                     removeFromCart(productId);
-                    renderCart();
+                    renderCart(); // Re-renderiza o carrinho e atualiza os dados do Insider
                 });
             });
+
+            // --- Bloco para o Insider ---
+            if (window.InsiderQueue) {
+                const insiderItems = cart.map(cartItem => {
+                    const productData = products.find(p => p.id == cartItem.id); // Encontra o produto completo em data.js
+
+                    return {
+                        "id": String(cartItem.id), // Insider geralmente espera string para IDs
+                        "name": cartItem.name,
+                        "taxonomy": productData ? [productData.category] : [], // Usa a categoria do produto
+                        "unit_price": cartItem.price,
+                        "unit_sale_price": cartItem.price, // Assumindo que não há preço de venda diferente do unit_price
+                        "quantity": cartItem.quantity,
+                        "url": window.location.href, // Exemplo de URL do produto
+                        "stock": 100, // Valor de estoque fixo, idealmente viria do productData
+                        "color": "", // Não disponível nos dados mock, pode ser adicionado ao data.js
+                        "size": "", // Não disponível nos dados mock, pode ser adicionado ao data.js
+                        "product_image_url": cartItem.imageUrl
+                    };
+                });
+
+                window.InsiderQueue.push({
+                    type: 'cart',
+                    value: {
+                        "shipping_cost": shippingCost,
+                        "total": grandTotal,
+                        "items": insiderItems
+                    }
+                });
+
+                // User Object
+
+        window
+        .InsiderQueue
+        .push({
+            type: 'user',
+            value: {
+                "uuid": "INS123",
+                "gender": "M",
+                "birthday": "2003-02-06",
+                "gdpr_optin": true,
+                "name": "Vinicius",
+                "surname": "Freitas",
+                "username": "Vinifreitas",
+                "age": 22,
+                "email": "jdoe@useinsider.com",
+                "email_optin": true,
+                "phone_number": "+120394879878",
+                "sms_optin": true,
+                "language": "pt_BR",
+                "city": "Mogi das Cruzes",
+                "country": "Brasil",
+                "whatsapp_optin": true
+            }
+        });
+            }
+            // --- Fim do Bloco para o Insider ---
         };
 
         document.addEventListener('DOMContentLoaded', renderCart);
+
+        // Insider Init (mantenha como está)
+        if (window.InsiderQueue) {
+            window.InsiderQueue.push({
+                type: 'init'
+            });
+        }
     </script>
 </body>
 </html>

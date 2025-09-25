@@ -7,12 +7,58 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="data.js"></script>
     <script type="module" src="store.js"></script>
+    <!-- Insider Queue  -->
+    <script>window.InsiderQueue = window.InsiderQueue || [];</script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
+<!-- Insider tag -->
+<script async src="https://tamuat.api.useinsider.com/ins.js?id=10007210"></script>
+
 <body class="bg-gray-100 flex flex-col min-h-screen">
+
+    <script>
+        //Category page view
+                window.InsiderQueue.push({
+                type: 'category',
+                value: {
+                breadcrumb: ['all'],
+                },
+            });
+
+        // User Object
+
+        window
+        .InsiderQueue
+        .push({
+            type: 'user',
+            value: {
+                "uuid": "INS123",
+                "gender": "M",
+                "birthday": "2003-02-06",
+                "gdpr_optin": true,
+                "name": "Vinicius",
+                "surname": "Freitas",
+                "username": "Vinifreitas",
+                "age": 22,
+                "email": "jdoe@useinsider.com",
+                "email_optin": true,
+                "phone_number": "+120394879878",
+                "sms_optin": true,
+                "language": "pt_BR",
+                "city": "Mogi das Cruzes",
+                "country": "Brasil",
+                "whatsapp_optin": true
+            }
+        });
+
+        //Init
+         window.InsiderQueue.push({
+        type: 'init'
+        });
+</script>
 
     <header class="bg-white shadow-md">
         <nav class="container mx-auto p-4 flex justify-between items-center">
@@ -86,10 +132,34 @@
             const selectedCategory = categoryFilter.value;
             if (selectedCategory === 'all') {
                 renderProducts(allProducts);
+
+                //Category page view
+                window.InsiderQueue.push({
+                type: 'category',
+                value: {
+                breadcrumb: [selectedCategory],
+                },
+            });
+            //Init
+            window.InsiderQueue.push({
+            type: 'init'
+            });
+
             } else {
                 const filtered = allProducts.filter(product => product.category === selectedCategory);
                 renderProducts(filtered);
             }
+            //Category page view
+            window.InsiderQueue.push({
+            type: 'category',
+            value: {
+            breadcrumb: [selectedCategory]
+            },
+            });
+            //Init
+            window.InsiderQueue.push({
+            type: 'init'
+            });
         };
 
         document.addEventListener('DOMContentLoaded', () => {

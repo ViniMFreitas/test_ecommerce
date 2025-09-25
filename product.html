@@ -7,11 +7,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="data.js"></script>
     <script type="module" src="store.js"></script>
+    <!-- Insider Queue  -->
+    <script>window.InsiderQueue = window.InsiderQueue || [];</script>
+    <!-- Insider Tag  -->
+    <script async src="https://tamuat.api.useinsider.com/ins.js?id=10007210"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
+
 <body class="bg-gray-100 flex flex-col min-h-screen">
 
     <header class="bg-white shadow-md">
@@ -77,7 +82,58 @@
                     showMessageBox();
                 });
             }
-        };
+
+             // Product page view 
+         window.InsiderQueue.push({
+         type: 'product',
+         value: {
+         "id": `${productId}`,
+         "name": product.name,
+         "taxonomy": [
+             product.category
+         ],
+         "unit_price": product.price,
+         "unit_sale_price": product.price,
+         "url": window.location.href,
+         "stock": 11,
+         "size": "S",
+         "product_image_url": product.imageUrl,
+     }
+ });
+
+        // User Object
+
+        window
+        .InsiderQueue
+        .push({
+            type: 'user',
+            value: {
+                "uuid": "INS123",
+                "gender": "M",
+                "birthday": "2003-02-06",
+                "gdpr_optin": true,
+                "name": "Vinicius",
+                "surname": "Freitas",
+                "username": "Vinifreitas",
+                "age": 22,
+                "email": "jdoe@useinsider.com",
+                "email_optin": true,
+                "phone_number": "+120394879878",
+                "sms_optin": true,
+                "language": "pt_BR",
+                "city": "Mogi das Cruzes",
+                "country": "Brasil",
+                "whatsapp_optin": true
+            }
+        });
+
+         // PUSH INIT
+            window.InsiderQueue.push({
+             type: 'init'
+             });
+         };
+
+        //Fim Insider
 
         const showMessageBox = () => {
             const messageBox = document.getElementById('message-box');
@@ -95,6 +151,36 @@
             const product = getProductById(productId);
             renderProductDetails(product);
         });
+
+        
+    </script>
+
+    <!-- <script>
+        window.InsiderQueue.push({
+    type: 'product',
+    value: {
+        "id": "abc1234",
+        "groupcode": "abd5678",
+        "name": "Blue Dress",
+        "taxonomy": [
+            "Dresses",
+            "Night Dresses",
+            "Long Sleeve"
+        ],
+        "unit_price": 100.00,
+        "unit_sale_price": 95.20,
+        "url": "https://posh.useinsider.com/blue-dress",
+        "stock": 11,
+        "color": "Blue",
+        "size": "S",
+        "product_image_url": "https://posh.useinsider.com/blue-dress.png"
+    }
+});   --> 
+
+window.InsiderQueue.push({
+    type: 'init'
+});
     </script>
 </body>
 </html>
+

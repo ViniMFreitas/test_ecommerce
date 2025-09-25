@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja Teste - Finalizar Compra</title>
+    <title>Loja Teste - Confirmação de Compra</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="data.js"></script>
     <script type="module" src="store.js"></script>
+    <!-- Insider Queue -->
+    <script>window.InsiderQueue = window.InsiderQueue || [];</script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
+<!-- Insider Tag -->
+<script async src="https://tamuat.api.useinsider.com/ins.js?id=10007210"></script>
 <body class="bg-gray-100 flex flex-col min-h-screen">
 
     <header class="bg-white shadow-md">
@@ -26,36 +30,17 @@
     </header>
 
     <main class="container mx-auto p-8 flex-grow">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Finalizar Compra</h1>
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-green-600 mb-4">Compra Concluída!</h1>
+            <p class="text-gray-600">Obrigado pela sua compra. Seu pedido foi processado com sucesso.</p>
+        </div>
         
-        <div id="checkout-container" class="bg-white rounded-xl shadow-lg p-6 max-w-2xl mx-auto">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Resumo do Pedido</h2>
-            <div id="order-summary" class="border-b border-gray-200 pb-4 mb-4">
-                <!-- Resumo do pedido será renderizado aqui -->
-            </div>
-            
-            <form id="purchase-form" class="space-y-4">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Dados do Cliente</h2>
-                <div>
-                    <label for="name" class="block text-sm font-semibold text-gray-700">Nome Completo</label>
-                    <input type="text" id="name" name="name" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                </div>
-                <div>
-                    <label for="email" class="block text-sm font-semibold text-gray-700">E-mail</label>
-                    <input type="email" id="email" name="email" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                </div>
-                <div>
-                    <label for="address" class="block text-sm font-semibold text-gray-700">Endereço</label>
-                    <textarea id="address" name="address" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required></textarea>
-                </div>
-                <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-green-700 transition-colors duration-200">
-                    Confirmar Compra
-                </button>
-            </form>
+        <div id="purchase-container" class="bg-white rounded-xl shadow-lg p-6">
+            <!-- Detalhes do pedido serão renderizados aqui -->
+        </div>
 
-            <div id="message-box" class="fixed bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 bg-green-500 text-white rounded-full shadow-lg transition-transform transform-gpu scale-0" style="min-width: 250px; text-align: center;">
-                Compra finalizada com sucesso!
-            </div>
+        <div id="purchase-summary" class="bg-white rounded-xl shadow-lg p-6 mt-6">
+            <!-- Resumo do pedido será renderizado aqui -->
         </div>
     </main>
 
@@ -64,76 +49,142 @@
     </footer>
 
     <script type="module">
-        import { getCart, getCartTotal, clearCart } from './store.js';
+        import { getCart, clearCart, getCartTotal } from './store.js';
+        import { products } from './data.js'; // Importar os produtos do data.js
 
-        const renderOrderSummary = () => {
+        const renderPurchase = () => {
             const cart = getCart();
-            const summaryContainer = document.getElementById('order-summary');
-            if (!summaryContainer) return;
-            
+            const container = document.getElementById('purchase-container');
+            const summary = document.getElementById('purchase-summary');
+            if (!container || !summary) return;
+
+            // Se carrinho vazio, redirecione para cart
             if (cart.length === 0) {
-                summaryContainer.innerHTML = `<p class="text-center text-gray-600">Seu carrinho está vazio.</p>`;
+                window.location.href = 'cart.html';
                 return;
             }
 
-            let summaryHtml = '';
+            // Gerar order_id único
+            const orderId = `ORD-${Date.now()}`;
+
+            container.innerHTML = `
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Itens do Pedido #${orderId}</h2>
+            `;
+
             cart.forEach(item => {
-                summaryHtml += `
-                    <div class="flex justify-between py-2 text-gray-700 border-b border-gray-100 last:border-b-0">
-                        <span>${item.name} (${item.quantity})</span>
-                        <span>R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
+                const purchaseItem = document.createElement('div');
+                purchaseItem.className = "flex items-center justify-between border-b border-gray-200 py-4 last:border-b-0";
+                purchaseItem.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <img src="${item.imageUrl}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover">
+                        <div>
+                            <h3 class="font-semibold text-gray-900">${item.name}</h3>
+                            <p class="text-gray-500 text-sm">Quantidade: ${item.quantity}</p>
+                            <p class="text-blue-600 font-bold mt-1">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</p>
+                        </div>
                     </div>
                 `;
+                container.appendChild(purchaseItem);
             });
 
-            const total = getCartTotal();
-            summaryHtml += `
-                <div class="flex justify-between py-2 text-lg font-bold text-gray-800">
-                    <span>Total:</span>
-                    <span>R$ ${total.toFixed(2).replace('.', ',')}</span>
+            const cartTotal = getCartTotal();
+            const shippingCost = 7.99; // Exemplo de custo de frete fixo
+            const grandTotal = cartTotal + shippingCost;
+
+            summary.innerHTML = `
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-lg font-bold text-gray-800">Subtotal:</span>
+                    <span class="text-xl font-bold text-blue-600">R$ ${cartTotal.toFixed(2).replace('.', ',')}</span>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-bold text-gray-800">Frete:</span>
+                    <span class="text-xl font-bold text-blue-600">R$ ${shippingCost.toFixed(2).replace('.', ',')}</span>
+                </div>
+                <div class="flex justify-between items-center mb-6 border-t pt-4">
+                    <span class="text-xl font-bold text-gray-800">Total:</span>
+                    <span class="text-2xl font-bold text-green-600">R$ ${grandTotal.toFixed(2).replace('.', ',')}</span>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-600 mb-2">Número do Pedido: <strong>${orderId}</strong></p>
+                    <a href="index.html" class="block text-center bg-blue-600 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-200 inline-block">
+                        Continuar Comprando
+                    </a>
                 </div>
             `;
-            
-            summaryContainer.innerHTML = summaryHtml;
-        };
 
-        const showMessageBox = () => {
-            const messageBox = document.getElementById('message-box');
-            if (messageBox) {
-                messageBox.classList.remove('scale-0');
-                messageBox.classList.add('scale-100');
-                setTimeout(() => {
-                    messageBox.classList.remove('scale-100');
-                    messageBox.classList.add('scale-0');
-                }, 2000);
-            }
-        };
+            // --- Bloco para o Insider (Purchase Event) ---
+            if (window.InsiderQueue) {
+                const insiderItems = cart.map(cartItem => {
+                    const productData = products.find(p => p.id == cartItem.id); // Encontra o produto completo em data.js
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderOrderSummary();
-
-            const form = document.getElementById('purchase-form');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    
-                    // Simula a finalização da compra
-                    console.log("Compra finalizada!");
-                    console.log("Dados do Cliente:", {
-                        name: document.getElementById('name').value,
-                        email: document.getElementById('email').value,
-                        address: document.getElementById('address').value
-                    });
-                    
-                    clearCart();
-                    showMessageBox();
-                    
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 2500); // Redireciona para a home após a mensagem
+                    return {
+                        "id": String(cartItem.id), // Insider geralmente espera string para IDs
+                        "name": cartItem.name,
+                        "taxonomy": productData ? [productData.category] : [], // Usa a categoria do produto
+                        "unit_price": cartItem.price,
+                        "unit_sale_price": cartItem.price, // Assumindo que não há preço de venda diferente do unit_price
+                        "quantity": cartItem.quantity,
+                        "url": window.location.href, // Exemplo de URL do produto
+                        "stock": 100, // Valor de estoque fixo, idealmente viria do productData
+                        "color": "", // Não disponível nos dados mock, pode ser adicionado ao data.js
+                        "size": "", // Não disponível nos dados mock, pode ser adicionado ao data.js
+                        "product_image_url": cartItem.imageUrl,
+                        "custom": {
+                            "merchandiser": "store123" // Exemplo fixo; torne dinâmico se necessário
+                        }
+                    };
                 });
+
+                window.InsiderQueue.push({
+                    type: 'purchase',
+                    value: {
+                        "order_id": orderId,
+                        "total": grandTotal,
+                        "shipping_cost": shippingCost,
+                        "items": insiderItems
+                    }
+                });
+
+                // User Object
+
+        window
+        .InsiderQueue
+        .push({
+            type: 'user',
+            value: {
+                "uuid": "INS123",
+                "gender": "M",
+                "birthday": "2003-02-06",
+                "gdpr_optin": true,
+                "name": "Vinicius",
+                "surname": "Freitas",
+                "username": "Vinifreitas",
+                "age": 22,
+                "email": "jdoe@useinsider.com",
+                "email_optin": true,
+                "phone_number": "+120394879878",
+                "sms_optin": true,
+                "language": "pt_BR",
+                "city": "Mogi das Cruzes",
+                "country": "Brasil",
+                "whatsapp_optin": true
             }
         });
+
+                // Limpar o carrinho após o push (simula compra concluída)
+                clearCart();
+            }
+            // --- Fim do Bloco para o Insider ---
+        };
+
+        document.addEventListener('DOMContentLoaded', renderPurchase);
+
+        // Insider Init 
+        if (window.InsiderQueue) {
+            window.InsiderQueue.push({
+                type: 'init'
+            });
+        }
     </script>
 </body>
 </html>

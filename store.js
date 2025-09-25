@@ -11,7 +11,9 @@ const CART_STORAGE_KEY = 'e-commerce-cart';
 export const getCart = () => {
     try {
         const cart = localStorage.getItem(CART_STORAGE_KEY);
+        
         return cart ? JSON.parse(cart) : [];
+        
     } catch (e) {
         console.error("Erro ao ler o carrinho do localStorage:", e);
         return [];
@@ -40,14 +42,60 @@ export const addToCart = (product) => {
     
     saveCart(cart);
     console.log(`Produto adicionado ao carrinho: ${product.name}`);
+
+    // Add to Cart Insider
+
+    window.InsiderQueue.push({
+    type: "add_to_cart",   // OR  type: "remove_from_cart",
+    value: {
+        "id": `${product.id}`,
+        "name": product.name,
+        "taxonomy": [
+            product.categories
+        ],
+        "unit_price": product.price,
+        "unit_sale_price": product.price,
+        "quantity": 1,
+        "url": window.location.href,
+        "product_image_url": product.imageUrl
+    }
+});
 };
 
 // Remove um item do carrinho
 export const removeFromCart = (productId) => {
     let cart = getCart();
     cart = cart.filter(item => item.id !== parseInt(productId));
+    // const existingItem = cart.find(item => item.id === parseInt(product.id));
+
+    // if (existingItem) {
+    //     existingItem.quantity -= 1;
+    // } else {
+    //     cart.push({ ...product, quantity: 0 });
+    // }
+
+
+    // cart = cart.filter(item => item.id !== parseInt(product.id));
     saveCart(cart);
     console.log(`Produto removido do carrinho: ID ${productId}`);
+
+    // Remove from Cart Insider
+
+    // window.InsiderQueue.push({
+    //     type: "remove_from_cart",  
+    //     value: {
+    //         "id": `${product.id}`,
+    //         "name": product.name,
+    //         "taxonomy": [
+    //             product.categories
+    //         ],
+    //         "unit_price": product.price,
+    //         "unit_sale_price": product.price,
+    //         "quantity": 1,
+    //         "url": window.location.href,
+    //         "product_image_url": product.imageUrl
+    //     }
+    // });
 };
 
 // Limpa o carrinho
