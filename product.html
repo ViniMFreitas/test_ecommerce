@@ -93,6 +93,34 @@
                     addToCart(product);
                     showMessageBox();
                 });
+
+                // Add to Cart Insider
+
+                // Buscar o produto pelo ID dentro do data.js
+                    const product = products.find(p => p.id === productId);
+
+                    if (product) {
+                        // Enviar evento dinâmico para o Insider
+                        window.InsiderQueue.push({
+                            type: "add_to_cart",
+                            value: {
+                                id: product.id,
+                                name: product.name,
+                                taxonomy: [product.category], // você pode expandir se quiser hierarquia
+                                unit_price: product.price,
+                                unit_sale_price: product.price, // se tiver desconto, substitua
+                                quantity: 1, // ajustar conforme o carrinho
+                                url: window.location.href, // ou link da página do produto
+                                stock: 10, // se tiver esse dado
+                                color: product.color || null, // só se existir
+                                size: product.size || null,   // idem
+                                product_image_url: product.imageUrl,
+                                custom: {
+                                    description: product.description
+                                }
+                            }
+                        });
+                    }
             }
 
              // Product page view 
